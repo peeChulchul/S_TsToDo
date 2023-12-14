@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Container } from "src/components/Container";
-import useLocalStorage from "src/hooks/useLocalStorage";
+import { useToDoContext } from "src/context/ToDoContext";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 const ToDoForm = styled.form`
@@ -31,7 +31,7 @@ interface IinputVaule {
 
 export default function ToDoInput() {
   const [inputValue, setInputValue] = useState<IinputVaule>({ title: "", content: "" });
-  const { setValue: setLocalToDos } = useLocalStorage({ key: "ToDos", initialValue: [] });
+  const { setLocalToDo } = useToDoContext();
 
   function onChangeTitle(e: ChangeEvent<HTMLInputElement>) {
     setInputValue((prev) => ({ ...prev, title: e.target.value }));
@@ -42,9 +42,9 @@ export default function ToDoInput() {
 
   function onSubmitToDoForm(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLocalToDos((prev) => [
+    setLocalToDo((prev) => [
       ...prev,
-      { key: uuidv4(), title: inputValue.title, content: inputValue.content, isDone: false, createAt: 0 }
+      { key: uuidv4(), title: inputValue.title, content: inputValue.content, isDone: false, createAt: Date.now() }
     ]);
   }
 
