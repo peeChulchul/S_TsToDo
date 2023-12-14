@@ -5,3 +5,5 @@ export interface Itodo {
   key: string;
   isDone: boolean;
 }
+
+export type Tcategory = "All" | "Active" | "Completed";

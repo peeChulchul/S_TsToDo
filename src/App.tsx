@@ -1,20 +1,22 @@
 import React from "react";
 import { GlobalStyles } from "src/style/GlobalStyles";
-import { ThemeProvider } from "styled-components";
-import { darkTheme } from "src/style/theme";
 import { Router } from "src/shared/Router";
 import { ToDoContextProvider } from "./context/ToDoContext";
 import { ThemeContextProvider } from "./context/ThemeContext";
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
 
 function App() {
   return (
     <>
-      <ThemeContextProvider>
-        <ToDoContextProvider>
-          <GlobalStyles />
-          <Router />
-        </ToDoContextProvider>
-      </ThemeContextProvider>
+      <Provider store={store}>
+        <ThemeContextProvider>
+          <ToDoContextProvider>
+            <GlobalStyles />
+            <Router />
+          </ToDoContextProvider>
+        </ThemeContextProvider>
+      </Provider>
     </>
   );
 }
