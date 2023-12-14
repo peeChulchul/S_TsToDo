@@ -1,6 +1,6 @@
-import { createContext, ReactNode, useState, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect } from "react";
 import useLocalStorage from "src/hooks/useLocalStorage";
-import { theme } from "src/style/theme";
+import { darkTheme, theme } from "src/style/theme";
 import { ThemeProvider } from "styled-components";
 
 interface IThemeContextValue {
@@ -15,18 +15,14 @@ const ThemeUpdateContext = createContext<IThemeUpdateContextValue>({
   toggleTheme: () => {}
 });
 
-export const useTheme = () => useContext(ThemeContext);
-export const useThemeUpdate = () => useContext(ThemeUpdateContext);
+export const useThemeContext = () => useContext(ThemeContext);
+export const useThemeUpdateContext = () => useContext(ThemeUpdateContext);
 
 export const ThemeContextProvider = ({ children }: React.PropsWithChildren) => {
-  const { value: currentTheme, setValue: setCurrentTheme } = useLocalStorage({ key: "Theme", initialValue: [] });
-  const [throttle, setThrottle] = useState("");
-
-  console.log(currentTheme);
+  const { value: currentTheme, setValue: setCurrentTheme } = useLocalStorage({ key: "Theme", initialValue: "light" });
 
   const toggleTheme = () => {
-    console.log(currentTheme);
-    // setCurrentTheme();
+    setCurrentTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
   useEffect(() => {}, []);
@@ -34,7 +30,7 @@ export const ThemeContextProvider = ({ children }: React.PropsWithChildren) => {
   return (
     <ThemeContext.Provider value={{ currentTheme }}>
       <ThemeUpdateContext.Provider value={{ toggleTheme }}>
-        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        <ThemeProvider theme={currentTheme === "light" ? theme : darkTheme}>{children}</ThemeProvider>
       </ThemeUpdateContext.Provider>
     </ThemeContext.Provider>
   );

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 const ToDoForm = styled.form`
   background-color: ${({ theme }) => theme.color.primary};
-  padding: ${({ theme }) => theme.spacing.lg};
+  padding: ${({ theme }) => theme.spacing.lg} 0;
   .input__wrapper {
     display: flex;
     gap: ${({ theme }) => theme.spacing.sm};
@@ -46,6 +46,7 @@ export default function ToDoInput() {
       ...prev,
       { key: uuidv4(), title: inputValue.title, content: inputValue.content, isDone: false, createAt: Date.now() }
     ]);
+    setInputValue({ title: "", content: "" });
   }
 
   return (

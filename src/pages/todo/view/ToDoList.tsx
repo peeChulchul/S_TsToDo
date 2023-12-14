@@ -4,16 +4,33 @@ import styled from "styled-components";
 import ToDoItem from "../ToDoItem";
 import { useToDoContext } from "src/context/ToDoContext";
 
+const ToDoItemBox = styled.ul`
+  background-color: ${({ theme }) => theme.color.bg};
+  color: ${({ theme }) => theme.color.text};
+  padding: ${({ theme }) => theme.spacing.xl} 0;
+  flex: 1;
+`;
+
 export default function ToDoList() {
-  const { localToDo } = useToDoContext();
+  const { localToDo, category } = useToDoContext();
+
+  const SelectToDos = localToDo.filter((todo) => {
+    if (category === "Active") {
+      return todo.isDone === false;
+    }
+    if (category === "Completed") {
+      return todo.isDone === true;
+    }
+    return true;
+  });
 
   return (
-    <ul>
+    <ToDoItemBox>
       <Container>
-        {localToDo.map((todo) => (
+        {SelectToDos.map((todo) => (
           <ToDoItem key={todo.key} todo={todo} />
         ))}
       </Container>
-    </ul>
+    </ToDoItemBox>
   );
 }
