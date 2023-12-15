@@ -5,8 +5,7 @@ import { Itodo } from "src/types/todo";
 import ToDoModify from "./ToDoModify";
 import Swal from "sweetalert2";
 import { useAppDispatch } from "src/redux/store";
-import { deleteToDo, modifyToDo, switchToDo } from "src/redux/modules/toDoModules";
-import { deleteJsonToDo, switchJsonToDos } from "src/api/json_server";
+import { __deleteToDos, __switchToDos } from "src/redux/modules/toDoModules";
 
 const ToDoBox = styled.li<{ $checked: boolean }>`
   display: flex;
@@ -92,8 +91,7 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
 
   async function onChangeChecked() {
     setChecked((prev) => !prev);
-    await switchJsonToDos({ isDone: !isDone, id });
-    dispatch(switchToDo({ isDone: !isDone, id }));
+    await dispatch(__switchToDos({ isDone: !isDone, id }));
   }
 
   async function onClickDelete() {
@@ -106,8 +104,7 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
       cancelButtonText: "취소"
     });
     if (agreed.isConfirmed) {
-      await deleteJsonToDo({ id });
-      dispatch(deleteToDo({ id }));
+      await dispatch(__deleteToDos({ id }));
       Swal.fire({
         icon: "success",
         title: "완료",

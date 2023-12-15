@@ -1,8 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { getJsonToDos } from "src/api/json_server";
 import PageToDo from "src/pages/todo/view/PageToDo";
-import { getToDo } from "src/redux/modules/toDoModules";
+import { __getToDos } from "src/redux/modules/toDoModules";
 import { RootState, useAppDispatch, useAppSelector } from "src/redux/store";
 import { GlobalStyles } from "src/style/GlobalStyles";
 import { darkTheme, theme } from "src/style/theme";
@@ -12,9 +11,8 @@ export function Router() {
   const dispatch = useAppDispatch();
 
   const fetchToDos = useCallback(async () => {
-    const result = await getJsonToDos();
-    dispatch(getToDo(result));
-  }, [dispatch]);
+    await dispatch(__getToDos());
+  }, []);
 
   useEffect(() => {
     fetchToDos();

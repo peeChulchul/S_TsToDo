@@ -1,7 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { addJsonToDos } from "src/api/json_server";
 import { Container } from "src/components/Container";
-import { addToDo } from "src/redux/modules/toDoModules";
+import { __addToDos } from "src/redux/modules/toDoModules";
 import { useAppDispatch } from "src/redux/store";
 import styled from "styled-components";
 import { v4 } from "uuid";
@@ -46,8 +45,7 @@ export default function ToDoInput() {
     e.preventDefault();
     const id = v4();
     const createAt = Date.now();
-    addJsonToDos({ title: inputValue.title, content: inputValue.content, id, createAt });
-    dispatch(addToDo({ title: inputValue.title, content: inputValue.content, id, createAt }));
+    await dispatch(__addToDos({ title: inputValue.title, content: inputValue.content, id, createAt }));
     setInputValue({ title: "", content: "" });
   }
 

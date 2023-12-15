@@ -1,7 +1,6 @@
 import React, { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { MdCheck, MdCancel } from "react-icons/md";
-import { modifyJsonToDo } from "src/api/json_server";
-import { modifyToDo } from "src/redux/modules/toDoModules";
+import { __modifyToDos } from "src/redux/modules/toDoModules";
 import { useAppDispatch } from "src/redux/store";
 import { Itodo } from "src/types/todo";
 import styled from "styled-components";
@@ -73,8 +72,7 @@ export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
     });
     if (agreed) {
       const createAt = Date.now();
-      await modifyJsonToDo({ id, content: inputValue.content, title: inputValue.title, createAt });
-      dispatch(modifyToDo({ id, content: inputValue.content, title: inputValue.title, createAt }));
+      await dispatch(__modifyToDos({ id, content: inputValue.content, title: inputValue.title, createAt }));
       setIsModify(false);
       await Swal.fire({
         icon: "success",
