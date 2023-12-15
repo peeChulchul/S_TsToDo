@@ -5,7 +5,7 @@ import { Itodo } from "src/types/todo";
 import ToDoModify from "./ToDoModify";
 import Swal from "sweetalert2";
 import { useAppDispatch } from "src/redux/store";
-import { deleteToDo, modifyToDo } from "src/redux/modules/toDoModules";
+// import { deleteToDo, modifyToDo } from "src/redux/modules/toDoModules";
 // import useToDoDispatch from "src/hooks/useToDoDispatch";
 
 const ToDoBox = styled.li<{ $checked: boolean }>`
@@ -79,11 +79,19 @@ const ToDoBtns = styled.div`
 
 interface ItoDoItemProps {
   todo: Itodo;
+  deleteToDo: ({ key }: Pick<Itodo, "key">) => void;
+  modifyToDo: ({
+    title,
+    content,
+    key,
+    isDone
+  }: Omit<Itodo, "createAt" | "isDone"> & {
+    isDone?: boolean | undefined;
+  }) => void;
 }
 
-export default function ToDoItem({ todo }: ItoDoItemProps) {
+export default function ToDoItem({ todo, deleteToDo, modifyToDo }: ItoDoItemProps) {
   const { content, createAt: timeStamp, isDone, title, key } = todo;
-  // const { deleteToDo, modifyToDo } = useToDoDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState(isDone);
   const [isModify, setIsModify] = useState(false);
@@ -93,8 +101,8 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
 
   function onChangeChecked() {
     setChecked((prev) => !prev);
-    dispatch(modifyToDo({ title, content, isDone: !isDone, key }));
-    // modifyToDo({ title, content, isDone: !isDone, key });
+    modifyToDo({ title, content, isDone: !isDone, key });
+    // dispatch(modifyToDo({ title, content, isDone: !isDone, key }));
   }
 
   async function onClickDelete() {
@@ -107,7 +115,8 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
       cancelButtonText: "취소"
     });
     if (agreed.isConfirmed) {
-      dispatch(deleteToDo({ key }));
+      deleteToDo({ key });
+      // dispatch(deleteToDo({ key }));
       // deleteToDo({ key });
       Swal.fire({
         icon: "success",
@@ -120,7 +129,7 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
   return (
     <>
       {isModify ? (
-        <ToDoModify todo={todo} setIsModify={setIsModify} />
+        <ToDoModify modifyToDo={modifyToDo} todo={todo} setIsModify={setIsModify} />
       ) : (
         <ToDoBox $checked={checked}>
           <input className="todo__checkbox" checked={checked} onChange={onChangeChecked} type="checkbox"></input>

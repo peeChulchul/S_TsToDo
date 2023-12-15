@@ -1,7 +1,7 @@
 import React, { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { MdCheck, MdCancel } from "react-icons/md";
 // import useToDoDispatch from "src/hooks/useToDoDispatch";
-import { modifyToDo } from "src/redux/modules/toDoModules";
+// import { modifyToDo } from "src/redux/modules/toDoModules";
 import { useAppDispatch } from "src/redux/store";
 import { Itodo } from "src/types/todo";
 import styled from "styled-components";
@@ -46,9 +46,17 @@ const ToDoBtns = styled.div`
 interface ItoDoModifyProps {
   todo: Itodo;
   setIsModify: Dispatch<SetStateAction<boolean>>;
+  modifyToDo: ({
+    title,
+    content,
+    key,
+    isDone
+  }: Omit<Itodo, "createAt" | "isDone"> & {
+    isDone?: boolean | undefined;
+  }) => void;
 }
 
-export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
+export default function ToDoModify({ todo, setIsModify, modifyToDo }: ItoDoModifyProps) {
   const { content, title, key } = todo;
   // const { modifyToDo } = useToDoDispatch();
   const dispatch = useAppDispatch();
@@ -73,7 +81,7 @@ export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
       cancelButtonText: "취소"
     });
     if (agreed) {
-      dispatch(modifyToDo({ key, content: inputValue.content, title: inputValue.title }));
+      modifyToDo({ key, content: inputValue.content, title: inputValue.title });
       // modifyToDo({ key, content, title });
       setIsModify(false);
       await Swal.fire({

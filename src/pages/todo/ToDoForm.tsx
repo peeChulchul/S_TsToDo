@@ -1,7 +1,8 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Container } from "src/components/Container";
+import useToDoDispatch from "src/hooks/useToDoDispatch";
 // import useToDoDispatch from "src/hooks/useToDoDispatch";
-import { addToDo } from "src/redux/modules/toDoModules";
+// import { addToDo } from "src/redux/modules/toDoModules";
 import { useAppDispatch } from "src/redux/store";
 import styled from "styled-components";
 const ToDoForm = styled.form`
@@ -32,7 +33,7 @@ interface IinputVaule {
 
 export default function ToDoInput() {
   const [inputValue, setInputValue] = useState<IinputVaule>({ title: "", content: "" });
-  // const { addToDo } = useToDoDispatch();
+  const { addToDo } = useToDoDispatch();
   const dispatch = useAppDispatch();
 
   function onChangeTitle(e: ChangeEvent<HTMLInputElement>) {
@@ -44,7 +45,7 @@ export default function ToDoInput() {
 
   function onSubmitToDoForm(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dispatch(addToDo({ title: inputValue.title, content: inputValue.content }));
+    addToDo({ title: inputValue.title, content: inputValue.content });
     // addToDo({ title: inputValue.title, content: inputValue.content });
     setInputValue({ title: "", content: "" });
   }
