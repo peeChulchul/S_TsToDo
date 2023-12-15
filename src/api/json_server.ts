@@ -1,11 +1,11 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Itodo } from "src/types/todo";
 
 export const jsonServerInstance = axios.create({
   baseURL: process.env.REACT_APP_JSON_SERVER
 });
 
-export async function getJsonToDos() {
+export async function getJsonToDos(): Promise<AxiosResponse<Itodo[], []>> {
   const result = await jsonServerInstance.get(`toDos/?_sort=createAt&_order=desc`);
   return result;
 }

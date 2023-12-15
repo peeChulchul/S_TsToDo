@@ -4,8 +4,7 @@ import { MdDelete, MdAutoFixNormal } from "react-icons/md";
 import { Itodo } from "src/types/todo";
 import ToDoModify from "./ToDoModify";
 import Swal from "sweetalert2";
-import { useAppDispatch } from "src/redux/store";
-import { __deleteToDos, __switchToDos } from "src/redux/modules/toDoModules";
+import { useTodos } from "src/hooks/useToDos";
 
 const ToDoBox = styled.li<{ $checked: boolean }>`
   display: flex;
@@ -87,11 +86,11 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
   const [isModify, setIsModify] = useState(false);
   const currentDate = new Date(timeStamp);
   const createAt = currentDate.toISOString().slice(0, 16).replace("T", " ");
-  const dispatch = useAppDispatch();
+  const { deleteToDo, switchToDo } = useTodos();
 
   async function onChangeChecked() {
     setChecked((prev) => !prev);
-    await dispatch(__switchToDos({ isDone: !isDone, id }));
+    switchToDo({ isDone: !isDone, id });
   }
 
   async function onClickDelete() {
@@ -104,7 +103,7 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
       cancelButtonText: "취소"
     });
     if (agreed.isConfirmed) {
-      await dispatch(__deleteToDos({ id }));
+      deleteToDo({ id });
       Swal.fire({
         icon: "success",
         title: "완료",

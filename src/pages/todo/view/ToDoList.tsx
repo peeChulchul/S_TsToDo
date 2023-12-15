@@ -2,6 +2,7 @@ import { Container } from "src/components/Container";
 import styled from "styled-components";
 import ToDoItem from "../ToDoItem";
 import { RootState, useAppSelector } from "src/redux/store";
+import { useTodos } from "src/hooks/useToDos";
 
 const ToDoItemBox = styled.ul`
   background-color: ${({ theme }) => theme.color.bg};
@@ -11,24 +12,24 @@ const ToDoItemBox = styled.ul`
 `;
 
 export default function ToDoList() {
-  const { localToDo, category } = useAppSelector((modules: RootState) => modules.toDoModules);
-
-  const SelectToDos = localToDo.filter((todo) => {
-    if (category === "Active") {
-      return todo.isDone === false;
-    }
-    if (category === "Completed") {
-      return todo.isDone === true;
-    }
-    return true;
-  });
+  const { category } = useAppSelector((modules: RootState) => modules.toDoModules);
+  const { toDos = [], isLoading } = useTodos();
 
   return (
     <ToDoItemBox>
       <Container>
-        {SelectToDos.map((todo) => (
-          <ToDoItem key={todo.id} todo={todo} />
-        ))}
+        {!isLoading &&
+          toDos
+            .filter((todo) => {
+              if (category === "Active") {
+                return todo.isDone === false;
+              }
+              if (category === "Completed") {
+                return todo.isDone === true;
+              }
+              return true;
+            })
+            .map((todo) => <ToDoItem key={todo.id} todo={todo} />)}
       </Container>
     </ToDoItemBox>
   );

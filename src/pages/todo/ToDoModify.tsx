@@ -1,7 +1,6 @@
 import React, { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { MdCheck, MdCancel } from "react-icons/md";
-import { __modifyToDos } from "src/redux/modules/toDoModules";
-import { useAppDispatch } from "src/redux/store";
+import { useTodos } from "src/hooks/useToDos";
 import { Itodo } from "src/types/todo";
 import styled from "styled-components";
 import Swal from "sweetalert2";
@@ -49,7 +48,7 @@ interface ItoDoModifyProps {
 
 export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
   const { content, title, id } = todo;
-  const dispatch = useAppDispatch();
+  const { modifyToDo } = useTodos();
 
   const [inputValue, setInputValue] = useState<{ title: string; content: string }>({ title: title, content: content });
 
@@ -72,7 +71,7 @@ export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
     });
     if (agreed) {
       const createAt = Date.now();
-      await dispatch(__modifyToDos({ id, content: inputValue.content, title: inputValue.title, createAt }));
+      modifyToDo({ id, content: inputValue.content, title: inputValue.title, createAt });
       setIsModify(false);
       await Swal.fire({
         icon: "success",
