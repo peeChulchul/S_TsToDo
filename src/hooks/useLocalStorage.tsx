@@ -18,8 +18,12 @@ export default function useLocalStorage<T>({ key, initialValue }: IuseLocalStora
     }
   });
 
+  console.log("코드 실행됨");
   useEffect(() => {
+    console.log(value);
     localStorage.setItem(key, JSON.stringify(value));
+    const jsonValue = localStorage.getItem(key);
+    console.log(jsonValue);
   }, [key, value]);
 
   return { value, setValue };

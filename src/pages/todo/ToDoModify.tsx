@@ -1,10 +1,9 @@
 import React, { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { MdCheck, MdCancel } from "react-icons/md";
-import { useToDoContext } from "src/context/ToDoContext";
+import useToDoDispatch from "src/hooks/useToDoDispatch";
 import { Itodo } from "src/types/todo";
 import styled from "styled-components";
 import Swal from "sweetalert2";
-
 const ToDoModifyForm = styled.form`
   display: flex;
   align-items: center;
@@ -49,8 +48,8 @@ interface ItoDoModifyProps {
 
 export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
   const { content, title, key } = todo;
+  const { modifyToDo } = useToDoDispatch();
 
-  const { setLocalToDo } = useToDoContext();
   const [inputValue, setInputValue] = useState<{ title: string; content: string }>({ title: title, content: content });
 
   function onChangeTitle(e: ChangeEvent<HTMLInputElement>) {
@@ -71,15 +70,7 @@ export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
       cancelButtonText: "취소"
     });
     if (agreed) {
-      setLocalToDo((prev) => {
-        const newToDo = prev.map((todo) => {
-          if (todo.key === key) {
-            return { ...todo, createAt: Date.now(), title: inputValue.title, content: inputValue.content };
-          }
-          return todo;
-        });
-        return newToDo;
-      });
+      modifyToDo({ key, content, title });
       setIsModify(false);
       await Swal.fire({
         icon: "success",

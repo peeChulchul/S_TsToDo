@@ -3,8 +3,8 @@ import styled, { css } from "styled-components";
 import { MdDelete, MdAutoFixNormal } from "react-icons/md";
 import { Itodo } from "src/types/todo";
 import ToDoModify from "./ToDoModify";
-import { useToDoContext } from "src/context/ToDoContext";
 import Swal from "sweetalert2";
+import useToDoDispatch from "src/hooks/useToDoDispatch";
 
 const ToDoBox = styled.li<{ $checked: boolean }>`
   display: flex;
@@ -81,7 +81,7 @@ interface ItoDoItemProps {
 
 export default function ToDoItem({ todo }: ItoDoItemProps) {
   const { content, createAt: timeStamp, isDone, title, key } = todo;
-  const { setLocalToDo } = useToDoContext();
+  const { deleteToDo, modifyToDo } = useToDoDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState(isDone);
   const [isModify, setIsModify] = useState(false);
@@ -90,15 +90,7 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
 
   function onChangeChecked() {
     setChecked((prev) => !prev);
-    setLocalToDo((prev) => {
-      const newTodo = prev.map((todo) => {
-        if (todo.key === key) {
-          return { ...todo, isDone: !todo.isDone };
-        }
-        return todo;
-      });
-      return newTodo;
-    });
+    modifyToDo({ title, content, isDone: !isDone, key });
   }
 
   async function onClickDelete() {
@@ -111,10 +103,7 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
       cancelButtonText: "취소"
     });
     if (agreed.isConfirmed) {
-      setLocalToDo((prev) => {
-        const newTodo = prev.filter((todo) => todo.key !== key);
-        return newTodo;
-      });
+      deleteToDo({ key });
       Swal.fire({
         icon: "success",
         title: "완료",

@@ -3,8 +3,10 @@ import styled, { css } from "styled-components";
 import { MdOutlineLightMode, MdOutlineDarkMode } from "react-icons/md";
 import { Container } from "src/components/Container";
 import ToDoForm from "../ToDoForm";
-import { useThemeContext, useThemeUpdateContext } from "src/context/ThemeContext";
-import { useToDoContext } from "src/context/ToDoContext";
+import { toggleTheme } from "src/redux/modules/themeModules";
+import { RootState, useAppDispatch, useAppSelector } from "src/redux/store";
+import { chageCategory } from "src/redux/modules/toDoModules";
+import { Tcategory } from "src/types/todo";
 
 const Header = styled.header`
   position: sticky;
@@ -47,12 +49,14 @@ const CategoryBtn = styled.button<{ $category: boolean }>`
 `;
 
 export default function ToDoHeader() {
-  const { toggleTheme } = useThemeUpdateContext();
-  const { currentTheme } = useThemeContext();
-  const { setCategory, category } = useToDoContext();
+  const { currentTheme } = useAppSelector((modules: RootState) => modules.themeModules);
+  const category = useAppSelector((modules: RootState) => modules.toDoModules.category);
+  const dispatch = useAppDispatch();
 
-  function onClicCategory(category: string) {
-    setCategory(category);
+  console.log(currentTheme);
+
+  function onClicCategory(category: Tcategory) {
+    dispatch(chageCategory(category));
   }
 
   return (
@@ -61,9 +65,9 @@ export default function ToDoHeader() {
         <div className="header__top">
           <h1>My ToDo</h1>
           {currentTheme === "light" ? (
-            <MdOutlineDarkMode onClick={toggleTheme} />
+            <MdOutlineDarkMode onClick={() => dispatch(toggleTheme())} />
           ) : (
-            <MdOutlineLightMode onClick={toggleTheme} />
+            <MdOutlineLightMode onClick={() => dispatch(toggleTheme())} />
           )}
         </div>
 

@@ -11,8 +11,9 @@ const themeModules = createSlice({
   name: "themeModules",
   initialState,
   reducers: {
-    toggleTheme: (state, actions) => {
-      state.currentTheme = "light" ? "dark" : "light";
+    toggleTheme: (state) => {
+      const newTheme = state.currentTheme === "light" ? "dark" : "light";
+      state.currentTheme = newTheme;
     }
   }
 });
