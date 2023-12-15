@@ -1,6 +1,8 @@
 import React, { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { MdCheck, MdCancel } from "react-icons/md";
-import useToDoDispatch from "src/hooks/useToDoDispatch";
+// import useToDoDispatch from "src/hooks/useToDoDispatch";
+import { modifyToDo } from "src/redux/modules/toDoModules";
+import { useAppDispatch } from "src/redux/store";
 import { Itodo } from "src/types/todo";
 import styled from "styled-components";
 import Swal from "sweetalert2";
@@ -48,7 +50,8 @@ interface ItoDoModifyProps {
 
 export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
   const { content, title, key } = todo;
-  const { modifyToDo } = useToDoDispatch();
+  // const { modifyToDo } = useToDoDispatch();
+  const dispatch = useAppDispatch();
 
   const [inputValue, setInputValue] = useState<{ title: string; content: string }>({ title: title, content: content });
 
@@ -70,7 +73,8 @@ export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
       cancelButtonText: "취소"
     });
     if (agreed) {
-      modifyToDo({ key, content, title });
+      dispatch(modifyToDo({ key, content: inputValue.content, title: inputValue.title }));
+      // modifyToDo({ key, content, title });
       setIsModify(false);
       await Swal.fire({
         icon: "success",
@@ -113,7 +117,7 @@ export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
         <button>
           <MdCheck />
         </button>
-        <button onClick={onClickCancel}>
+        <button type="button" onClick={onClickCancel}>
           <MdCancel />
         </button>
       </ToDoBtns>

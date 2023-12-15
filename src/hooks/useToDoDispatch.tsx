@@ -13,13 +13,13 @@ export default function useToDoDispatch() {
     const key = uuidv4();
     const createAt = Date.now();
     const newToDo = [...localToDo, { key, title, content, isDone: false, createAt }];
-    setLocalToDo(() => newToDo);
+    setLocalToDo(newToDo);
     dispatch(setToDo(newToDo));
   }
 
   function deleteToDo({ key }: Pick<Itodo, "key">) {
     const newToDo = localToDo.filter((todo) => todo.key !== key);
-    setLocalToDo(() => newToDo);
+    setLocalToDo(newToDo);
     dispatch(setToDo(newToDo));
   }
 
@@ -31,7 +31,7 @@ export default function useToDoDispatch() {
       }
       return todo;
     });
-    setLocalToDo(() => newToDo);
+    setLocalToDo(newToDo);
     dispatch(setToDo(newToDo));
   }
 

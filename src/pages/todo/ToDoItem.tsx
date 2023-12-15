@@ -4,7 +4,9 @@ import { MdDelete, MdAutoFixNormal } from "react-icons/md";
 import { Itodo } from "src/types/todo";
 import ToDoModify from "./ToDoModify";
 import Swal from "sweetalert2";
-import useToDoDispatch from "src/hooks/useToDoDispatch";
+import { useAppDispatch } from "src/redux/store";
+import { deleteToDo, modifyToDo } from "src/redux/modules/toDoModules";
+// import useToDoDispatch from "src/hooks/useToDoDispatch";
 
 const ToDoBox = styled.li<{ $checked: boolean }>`
   display: flex;
@@ -81,16 +83,18 @@ interface ItoDoItemProps {
 
 export default function ToDoItem({ todo }: ItoDoItemProps) {
   const { content, createAt: timeStamp, isDone, title, key } = todo;
-  const { deleteToDo, modifyToDo } = useToDoDispatch();
+  // const { deleteToDo, modifyToDo } = useToDoDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState(isDone);
   const [isModify, setIsModify] = useState(false);
   const currentDate = new Date(timeStamp);
   const createAt = currentDate.toISOString().slice(0, 16).replace("T", " ");
+  const dispatch = useAppDispatch();
 
   function onChangeChecked() {
     setChecked((prev) => !prev);
-    modifyToDo({ title, content, isDone: !isDone, key });
+    dispatch(modifyToDo({ title, content, isDone: !isDone, key }));
+    // modifyToDo({ title, content, isDone: !isDone, key });
   }
 
   async function onClickDelete() {
@@ -103,7 +107,8 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
       cancelButtonText: "취소"
     });
     if (agreed.isConfirmed) {
-      deleteToDo({ key });
+      dispatch(deleteToDo({ key }));
+      // deleteToDo({ key });
       Swal.fire({
         icon: "success",
         title: "완료",

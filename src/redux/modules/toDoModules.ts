@@ -20,14 +20,18 @@ const toDoModules = createSlice({
     addToDo: (state, actions: PayloadAction<Omit<Itodo, "createAt" | "isDone" | "key">>) => {
       const key = uuidv4();
       const createAt = Date.now();
-      state.localToDo = [{ key, ...actions.payload, isDone: false, createAt }, ...state.localToDo];
+      const newTodo = [{ key, ...actions.payload, isDone: false, createAt }, ...state.localToDo];
+      state.localToDo = newTodo;
+      localStorage.setItem("ToDos", JSON.stringify(newTodo));
     },
     deleteToDo: (state, actions: PayloadAction<Pick<Itodo, "key">>) => {
-      state.localToDo = state.localToDo.filter((todo) => todo.key !== actions.payload.key);
+      const newTodo = state.localToDo.filter((todo) => todo.key !== actions.payload.key);
+      state.localToDo = newTodo;
+      localStorage.setItem("ToDos", JSON.stringify(newTodo));
     },
     modifyToDo: (state, actions: PayloadAction<Omit<Itodo, "createAt" | "isDone"> & { isDone?: boolean }>) => {
       const createAt = Date.now();
-      state.localToDo = state.localToDo.map((todo) => {
+      const newTodo = state.localToDo.map((todo) => {
         if (todo.key === actions.payload.key) {
           return {
             ...todo,
@@ -38,6 +42,8 @@ const toDoModules = createSlice({
         }
         return todo;
       });
+      state.localToDo = newTodo;
+      localStorage.setItem("ToDos", JSON.stringify(newTodo));
     },
     chageCategory: (state, actions) => {
       state.category = actions.payload;
@@ -45,5 +51,5 @@ const toDoModules = createSlice({
   }
 });
 
-export const { setToDo, chageCategory } = toDoModules.actions;
+export const { setToDo, addToDo, deleteToDo, modifyToDo, chageCategory } = toDoModules.actions;
 export default toDoModules.reducer;

@@ -12,7 +12,7 @@ interface IToDoContextValue {
 const ToDoContext = createContext<IToDoContextValue>({
   localToDo: [],
   setLocalToDo: () => {},
-  category: "all",
+  category: "All",
   setCategory: () => {}
 });
 

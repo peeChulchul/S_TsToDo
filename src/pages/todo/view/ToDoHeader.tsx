@@ -53,8 +53,6 @@ export default function ToDoHeader() {
   const category = useAppSelector((modules: RootState) => modules.toDoModules.category);
   const dispatch = useAppDispatch();
 
-  console.log(currentTheme);
-
   function onClicCategory(category: Tcategory) {
     dispatch(chageCategory(category));
   }
