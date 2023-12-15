@@ -27,7 +27,7 @@ export default function ToDoList() {
     <ToDoItemBox>
       <Container>
         {SelectToDos.map((todo) => (
-          <ToDoItem key={todo.key} todo={todo} />
+          <ToDoItem key={todo.id} todo={todo} />
         ))}
       </Container>
     </ToDoItemBox>

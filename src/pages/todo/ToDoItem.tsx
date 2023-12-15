@@ -5,8 +5,8 @@ import { Itodo } from "src/types/todo";
 import ToDoModify from "./ToDoModify";
 import Swal from "sweetalert2";
 import { useAppDispatch } from "src/redux/store";
-import { deleteToDo, modifyToDo } from "src/redux/modules/toDoModules";
-// import useToDoDispatch from "src/hooks/useToDoDispatch";
+import { deleteToDo, modifyToDo, switchToDo } from "src/redux/modules/toDoModules";
+import { deleteJsonToDo, switchJsonToDos } from "src/api/json_server";
 
 const ToDoBox = styled.li<{ $checked: boolean }>`
   display: flex;
@@ -82,8 +82,7 @@ interface ItoDoItemProps {
 }
 
 export default function ToDoItem({ todo }: ItoDoItemProps) {
-  const { content, createAt: timeStamp, isDone, title, key } = todo;
-  // const { deleteToDo, modifyToDo } = useToDoDispatch();
+  const { content, createAt: timeStamp, isDone, title, id } = todo;
   const [isOpen, setIsOpen] = useState(false);
   const [checked, setChecked] = useState(isDone);
   const [isModify, setIsModify] = useState(false);
@@ -91,10 +90,10 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
   const createAt = currentDate.toISOString().slice(0, 16).replace("T", " ");
   const dispatch = useAppDispatch();
 
-  function onChangeChecked() {
+  async function onChangeChecked() {
     setChecked((prev) => !prev);
-    dispatch(modifyToDo({ title, content, isDone: !isDone, key }));
-    // modifyToDo({ title, content, isDone: !isDone, key });
+    await switchJsonToDos({ isDone: !isDone, id });
+    dispatch(switchToDo({ isDone: !isDone, id }));
   }
 
   async function onClickDelete() {
@@ -107,8 +106,8 @@ export default function ToDoItem({ todo }: ItoDoItemProps) {
       cancelButtonText: "취소"
     });
     if (agreed.isConfirmed) {
-      dispatch(deleteToDo({ key }));
-      // deleteToDo({ key });
+      await deleteJsonToDo({ id });
+      dispatch(deleteToDo({ id }));
       Swal.fire({
         icon: "success",
         title: "완료",

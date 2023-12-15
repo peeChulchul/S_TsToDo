@@ -1,9 +1,10 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
+import { addJsonToDos } from "src/api/json_server";
 import { Container } from "src/components/Container";
-// import useToDoDispatch from "src/hooks/useToDoDispatch";
 import { addToDo } from "src/redux/modules/toDoModules";
 import { useAppDispatch } from "src/redux/store";
 import styled from "styled-components";
+import { v4 } from "uuid";
 const ToDoForm = styled.form`
   background-color: ${({ theme }) => theme.color.primary};
   padding: ${({ theme }) => theme.spacing.lg} 0;
@@ -32,7 +33,6 @@ interface IinputVaule {
 
 export default function ToDoInput() {
   const [inputValue, setInputValue] = useState<IinputVaule>({ title: "", content: "" });
-  // const { addToDo } = useToDoDispatch();
   const dispatch = useAppDispatch();
 
   function onChangeTitle(e: ChangeEvent<HTMLInputElement>) {
@@ -42,10 +42,12 @@ export default function ToDoInput() {
     setInputValue((prev) => ({ ...prev, content: e.target.value }));
   }
 
-  function onSubmitToDoForm(e: FormEvent<HTMLFormElement>) {
+  async function onSubmitToDoForm(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dispatch(addToDo({ title: inputValue.title, content: inputValue.content }));
-    // addToDo({ title: inputValue.title, content: inputValue.content });
+    const id = v4();
+    const createAt = Date.now();
+    addJsonToDos({ title: inputValue.title, content: inputValue.content, id, createAt });
+    dispatch(addToDo({ title: inputValue.title, content: inputValue.content, id, createAt }));
     setInputValue({ title: "", content: "" });
   }
 

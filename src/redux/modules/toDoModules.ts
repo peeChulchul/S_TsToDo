@@ -1,12 +1,8 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Tcategory, Itodo } from "src/types/todo";
-import { v4 as uuidv4 } from "uuid";
-
-const storedToDos = localStorage.getItem("ToDos");
-const parsedToDos = storedToDos ? (JSON.parse(storedToDos) as Itodo[]) : [];
 
 const initialState: { localToDo: Itodo[]; category: Tcategory } = {
-  localToDo: parsedToDos,
+  localToDo: [],
   category: "All"
 };
 
@@ -14,36 +10,37 @@ const toDoModules = createSlice({
   name: "toDoModules",
   initialState,
   reducers: {
-    setToDo: (state, actions) => {
+    getToDo: (state, actions) => {
       state.localToDo = actions.payload;
     },
-    addToDo: (state, actions: PayloadAction<Omit<Itodo, "createAt" | "isDone" | "key">>) => {
-      const key = uuidv4();
-      const createAt = Date.now();
-      const newTodo = [{ key, ...actions.payload, isDone: false, createAt }, ...state.localToDo];
+    addToDo: (state, actions: PayloadAction<Omit<Itodo, "isDone">>) => {
+      const newTodo = [{ ...actions.payload, isDone: false }, ...state.localToDo];
       state.localToDo = newTodo;
-      localStorage.setItem("ToDos", JSON.stringify(newTodo));
     },
-    deleteToDo: (state, actions: PayloadAction<Pick<Itodo, "key">>) => {
-      const newTodo = state.localToDo.filter((todo) => todo.key !== actions.payload.key);
+    deleteToDo: (state, actions: PayloadAction<Pick<Itodo, "id">>) => {
+      const newTodo = state.localToDo.filter((todo) => todo.id !== actions.payload.id);
       state.localToDo = newTodo;
-      localStorage.setItem("ToDos", JSON.stringify(newTodo));
     },
-    modifyToDo: (state, actions: PayloadAction<Omit<Itodo, "createAt" | "isDone"> & { isDone?: boolean }>) => {
-      const createAt = Date.now();
+    switchToDo: (state, actions: PayloadAction<Pick<Itodo, "id" | "isDone">>) => {
+      const newToDo = state.localToDo.map((todo) => {
+        if (todo.id === actions.payload.id) {
+          return { ...todo, ...actions.payload };
+        }
+        return todo;
+      });
+      state.localToDo = newToDo;
+    },
+    modifyToDo: (state, actions: PayloadAction<Omit<Itodo, "isDone">>) => {
       const newTodo = state.localToDo.map((todo) => {
-        if (todo.key === actions.payload.key) {
+        if (todo.id === actions.payload.id) {
           return {
             ...todo,
-            createAt,
-            ...actions.payload,
-            isDone: actions.payload.isDone !== undefined ? actions.payload.isDone : todo.isDone
+            ...actions.payload
           };
         }
         return todo;
       });
       state.localToDo = newTodo;
-      localStorage.setItem("ToDos", JSON.stringify(newTodo));
     },
     chageCategory: (state, actions) => {
       state.category = actions.payload;
@@ -51,5 +48,5 @@ const toDoModules = createSlice({
   }
 });
 
-export const { setToDo, addToDo, deleteToDo, modifyToDo, chageCategory } = toDoModules.actions;
+export const { getToDo, addToDo, deleteToDo, modifyToDo, switchToDo, chageCategory } = toDoModules.actions;
 export default toDoModules.reducer;

@@ -1,6 +1,6 @@
 import React, { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { MdCheck, MdCancel } from "react-icons/md";
-// import useToDoDispatch from "src/hooks/useToDoDispatch";
+import { modifyJsonToDo } from "src/api/json_server";
 import { modifyToDo } from "src/redux/modules/toDoModules";
 import { useAppDispatch } from "src/redux/store";
 import { Itodo } from "src/types/todo";
@@ -49,8 +49,7 @@ interface ItoDoModifyProps {
 }
 
 export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
-  const { content, title, key } = todo;
-  // const { modifyToDo } = useToDoDispatch();
+  const { content, title, id } = todo;
   const dispatch = useAppDispatch();
 
   const [inputValue, setInputValue] = useState<{ title: string; content: string }>({ title: title, content: content });
@@ -73,8 +72,9 @@ export default function ToDoModify({ todo, setIsModify }: ItoDoModifyProps) {
       cancelButtonText: "취소"
     });
     if (agreed) {
-      dispatch(modifyToDo({ key, content: inputValue.content, title: inputValue.title }));
-      // modifyToDo({ key, content, title });
+      const createAt = Date.now();
+      await modifyJsonToDo({ id, content: inputValue.content, title: inputValue.title, createAt });
+      dispatch(modifyToDo({ id, content: inputValue.content, title: inputValue.title, createAt }));
       setIsModify(false);
       await Swal.fire({
         icon: "success",

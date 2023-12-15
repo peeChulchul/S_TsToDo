@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { MdOutlineLightMode, MdOutlineDarkMode } from "react-icons/md";
 import { Container } from "src/components/Container";
-import ToDoForm from "../ToDoForm";
+import ToDoForm from "./ToDoForm";
 import { toggleTheme } from "src/redux/modules/themeModules";
 import { RootState, useAppDispatch, useAppSelector } from "src/redux/store";
 import { chageCategory } from "src/redux/modules/toDoModules";
